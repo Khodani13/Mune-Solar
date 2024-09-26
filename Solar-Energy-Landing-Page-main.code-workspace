@@ -1,0 +1,31 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../react-form-main/public"
+		},
+		{
+			"path": "../react-form-main/src"
+		}
+	],
+	"settings": {
+		"sqltools.connections": [
+			{
+				"mysqlOptions": {
+					"authProtocol": "default",
+					"enableSsl": "Disabled"
+				},
+				"previewLimit": 50,
+				"server": "localhost",
+				"port": 3307,
+				"driver": "MySQL",
+				"database": "contact us form",
+				"username": "root",
+				"name": "MuneSolar",
+				"password": ""
+			}
+		]
+	}
+}
