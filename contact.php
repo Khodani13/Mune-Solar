@@ -6,7 +6,7 @@ error_reporting(E_ALL);
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require 'vendor/autoload.php'; // Include the Composer autoloader
+require 'vendor/autoload.php'; // Include Composer autoloader
 
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
@@ -14,19 +14,16 @@ header('Access-Control-Allow-Methods: POST');
 header('Access-Control-Allow-Headers: Content-Type');
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Debugging: Log received POST values
-    error_log(print_r($_POST, true));
-
     // Collect and sanitize POST data
     $name = isset($_POST['name']) ? htmlspecialchars(trim($_POST['name'])) : '';
     $email = isset($_POST['email']) ? htmlspecialchars(trim($_POST['email'])) : '';
     $phone = isset($_POST['phone']) ? htmlspecialchars(trim($_POST['phone'])) : '';
-    $subject = isset($_POST['subject']) ? htmlspecialchars(trim($_POST['subject'])) : 'Contact Form Submission'; // Default subject
+    $subject = isset($_POST['subject']) ? htmlspecialchars(trim($_POST['subject'])) : '';
     $message = isset($_POST['message']) ? htmlspecialchars(trim($_POST['message'])) : '';
 
     // Capture Type of Use and Power Requirement
-    $type_of_use = isset($_POST['type_of_use']) ? htmlspecialchars(trim($_POST['type_of_use'])) : 'Not Specified';
-    $power_requirement = isset($_POST['power_requirement']) ? htmlspecialchars(trim($_POST['power_requirement'])) : 'Not Specified';
+    $type_of_use = isset($_POST['type_of_use']) && !empty($_POST['type_of_use']) ? htmlspecialchars(trim($_POST['type_of_use'])) : 'Not Specified';
+    $power_requirement = isset($_POST['power_requirement']) && !empty($_POST['power_requirement']) ? htmlspecialchars(trim($_POST['power_requirement'])) : 'Not Specified';
 
     // Input validation
     if (empty($name) || empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -35,7 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit;
     }
 
-    // Debugging: Log collected values
+    // Debugging: Log received values
     error_log("Received values: Name=$name, Email=$email, Phone=$phone, Subject=$subject, Type of Use=$type_of_use, Power Requirement=$power_requirement, Message=$message");
 
     // Create a new PHPMailer instance
@@ -57,7 +54,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Content
         $mail->isHTML(true);
-        $mail->Subject = $subject;
+        $mail->Subject = $subject ?: 'Contact Form Submission'; // Default subject if empty
         $mail->Body    = "
             <strong>Name:</strong> $name<br>
             <strong>Email:</strong> $email<br>
@@ -81,6 +78,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         ]);
     }
 } else {
-    http_response_code(405);
+    http_response_code(405); // Method Not Allowed
     echo json_encode(["success" => false, "message" => "Method not allowed."]);
 }
+?>
